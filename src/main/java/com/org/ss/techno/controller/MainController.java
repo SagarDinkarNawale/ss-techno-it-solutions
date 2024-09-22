@@ -50,6 +50,10 @@ public class MainController {
     public String careers() {
         return "careers";
     }
+    @GetMapping("/services")
+    public String services() {
+        return "services";
+    }
 
     @GetMapping("/bot")
     public String bot() {
