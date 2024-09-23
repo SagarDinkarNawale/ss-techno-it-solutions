@@ -382,12 +382,13 @@
                 </div>
             </div>
             <div class="content-area-">
-                <section class="container mt-5">
+                <section class="container mt-4">
                     <h2 class="text-center">Contact Us</h2>
                     <form id="contactForm">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name"
+                                   required>
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
@@ -395,7 +396,8 @@
                         </div>
                         <div class="form-group">
                             <label for="contactNumber">Contact Number</label>
-                            <input type="tel" class="form-control" id="contactNumber" placeholder="Enter your contact number" required>
+                            <input type="tel" class="form-control" id="contactNumber"
+                                   placeholder="Enter your contact number" required>
                         </div>
                         <div class="form-group">
                             <label for="country">Country</label>
@@ -411,15 +413,18 @@
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" rows="3" placeholder="Enter your message" required></textarea>
+                            <textarea class="form-control" id="description" rows="3" placeholder="Enter your message"
+                                      required></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="clear" class="btn btn-danger">Clear</button>
                     </form>
                 </section>
                 <script>
                     $(document).ready(function() {
                         $('#contactForm').on('submit', function(event) {
                             event.preventDefault();
+
                             const formData = {
                                 fullName: $('#fullName').val(),
                                 email: $('#email').val(),
@@ -434,15 +439,21 @@
                                 data: JSON.stringify(formData),
                                 contentType: 'application/json',
                                 success: function(response) {
-                                    alert(response);
+                                    console.log('Success:', response);  // Log success response for debugging
+                                    alert('Form submitted successfully!');
                                 },
-                                error: function() {
+                                error: function(xhr, status, error) {
+                                    console.error('Error:', error);  // Log the actual error message for debugging
+                                    console.error('Status:', status);  // Log status (e.g., timeout, abort, error)
+                                    console.error('Response Text:', xhr.responseText);  // Log the server response
+
                                     alert('There was an error processing your request. Please try again.');
                                 }
                             });
                         });
                     });
                 </script>
+
 
             </div>
 

@@ -42,8 +42,9 @@ public class EmailService {
 
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(user.getEmail());
-            helper.setSubject("Thank You for Your Submission");
+            helper.setTo("sstechno1000@gmail.com");
+            helper.setFrom(user.getEmail());
+            helper.setSubject("Inquiry Submitted: "+user.getFullName());
             helper.setText(htmlBody, true);
 
             emailSender.send(message);
@@ -81,10 +82,11 @@ public void sendAcknowledgmentEmail(User user) throws MessagingException {
 
     MimeMessage message = emailSender.createMimeMessage();
     MimeMessageHelper helper = new MimeMessageHelper(message, true);
+    helper.setFrom("sstechno1000@gmail.com");
     helper.setTo(user.getEmail());
+    helper.setSubject("Inquiry Submitted: "+user.getFullName());
     helper.setSubject("Thank You for Your Submission");
     helper.setText(htmlBody, true);
-
     emailSender.send(message);
     System.out.println("Acknowledgment email sent successfully!");
 }
