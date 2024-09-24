@@ -49,9 +49,9 @@ public class MainController {
     @PostMapping("/submit")
     public ResponseEntity<String> submitForm(@RequestBody User user) {
         logger.info("UserInfo : {}", user);
-        boolean emailStatus = emailService.sendEmail(user);
+        Boolean emailStatus = emailService.sendEmail(user);
 
-        if (emailStatus) {
+        if (null==emailStatus) {
             return ResponseEntity.ok("Email sent successfully.");
         } else {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email.");

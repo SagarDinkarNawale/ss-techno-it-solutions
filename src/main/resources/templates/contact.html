@@ -429,72 +429,111 @@
                 </section>
                 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
-                    function clearForm() {
-       document.getElementById('contactForm').reset();
+                    $(document).ready(function () {
+                        $('#contactForm').on('submit', function (event) {
+                            event.preventDefault();
 
-       $('#fullName').val('');
-       $('#email').val('');
-       $('#contactNumber').val('');
-       $('#country').val('');
-       $('#description').val('');
-   }
-                  $(document).ready(function() {
-    $('#contactForm').on('submit', function(event) {
-        event.preventDefault();
+                            // Form field values
+                            const fullName = $('#fullName').val();
+                            const email = $('#email').val();
+                            const contactNumber = $('#contactNumber').val();
+                            const country = $('#country').val();
+                            const description = $('#description').val();
 
-        const formData = {
-            fullName: $('#fullName').val(),
-            email: $('#email').val(),
-            contactNumber: $('#contactNumber').val(),
-            country: $('#country').val(),
-            description: $('#description').val()
-        };
+                            // Validation regex patterns
+                            const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                            const phonePattern = /^[0-9]{10}$/; // Validates for a 10-digit phone number
+                            const namePattern = /^[a-zA-Z\s]+$/; // Only alphabets and spaces are allowed in the name
 
-        $.ajax({
-            type: 'POST',
-            url: '/submit',
-            data: JSON.stringify(formData),
-            contentType: 'application/json',
-            success: function(response) {
-                console.log('Success:', response);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Success!',
-                    text: 'Form submitted successfully!',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        confirmButton: 'btn btn-success'
-                    }
-                });
-                 document.getElementById('contactForm').reset();
-       $('#fullName').val('');
-       $('#email').val('');
-       $('#contactNumber').val('');
-       $('#country').val('');
-       $('#description').val('');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error:', error);
-                console.error('Status:', status);
-                console.error('Response Text:', xhr.responseText);
+                            // Validation checks
+                            if (!namePattern.test(fullName)) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Invalid Name',
+                                    text: 'Name cannot contain numbers or special characters.',
+                                    confirmButtonText: 'OK',
+                                    customClass: {
+                                        confirmButton: 'btn btn-warning'
+                                    }
+                                });
+                                return; // Stop form submission if validation fails
+                            }
 
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error!',
-                    text: 'There was an error processing your request. Please try again.',
-                    confirmButtonText: 'OK',
-                    customClass: {
-                        confirmButton: 'btn btn-danger'
-                    }
-                });
-            }
-        });
-    });
-});
+                            if (!emailPattern.test(email)) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Invalid Email',
+                                    text: 'Please enter a valid email address.',
+                                    confirmButtonText: 'OK',
+                                    customClass: {
+                                        confirmButton: 'btn btn-warning'
+                                    }
+                                });
+                                return;
+                            }
 
+                            if (!phonePattern.test(contactNumber)) {
+                                Swal.fire({
+                                    icon: 'warning',
+                                    title: 'Invalid Contact Number',
+                                    text: 'Please enter a valid 10-digit phone number.',
+                                    confirmButtonText: 'OK',
+                                    customClass: {
+                                        confirmButton: 'btn btn-warning'
+                                    }
+                                });
+                                return;
+                            }
+
+                            // If validation passes, create the form data object
+                            const formData = {
+                                fullName: fullName,
+                                email: email,
+                                contactNumber: contactNumber,
+                                country: country,
+                                description: description
+                            };
+
+                            // Make the AJAX request to submit the form
+                            $.ajax({
+                                type: 'POST',
+                                url: '/submit',
+                                data: JSON.stringify(formData),
+                                contentType: 'application/json',
+                                success: function (response) {
+                                    console.log('Success:', response);
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: 'Success!',
+                                        text: 'Form submitted successfully! Email is being processed.',
+                                        confirmButtonText: 'OK',
+                                        customClass: {
+                                            confirmButton: 'btn btn-success'
+                                        }
+                                    });
+
+                                    // Reset the form after successful submission
+                                    $('#contactForm')[0].reset();
+                                },
+                                error: function (xhr, status, error) {
+                                    console.error('Error:', error);
+                                    console.error('Status:', status);
+                                    console.error('Response Text:', xhr.responseText);
+
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: 'Error!',
+                                        text: 'There was an error processing your request. Please try again.',
+                                        confirmButtonText: 'OK',
+                                        customClass: {
+                                            confirmButton: 'btn btn-danger'
+                                        }
+                                    });
+                                }
+                            });
+                        });
+                    });
                 </script>
-
-
             </div>
 
         </div> <!--.container-->
