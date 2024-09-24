@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -23,8 +24,8 @@ public class EmailService {
     private SpringTemplateEngine templateEngine;
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
-
-    public boolean sendEmail(User user) {
+    @Async
+    public Boolean sendEmail(User user) {
         try {
             Context thymeleafContext = new Context();
             thymeleafContext.setVariable("fullName", user.getFullName());
