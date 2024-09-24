@@ -6,6 +6,8 @@ import com.org.ss.techno.service.EmailService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -33,6 +35,7 @@ public class MainController {
     public String careers() {
         return "careers";
     }
+
     @GetMapping("/services")
     public String services() {
         return "services";
@@ -42,10 +45,17 @@ public class MainController {
     public String aboutUs() {
         return "about-us";
     }
+
     @PostMapping("/submit")
-    public String submitForm(@RequestBody User user) {
-        logger.info("UserInfo : {}",user);
-        emailService.sendEmail(user);
-        return "done";
+    public ResponseEntity<String> submitForm(@RequestBody User user) {
+        logger.info("UserInfo : {}", user);
+        boolean emailStatus = emailService.sendEmail(user);
+
+        if (emailStatus) {
+            return ResponseEntity.ok("Email sent successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to send email.");
+        }
     }
+
 }

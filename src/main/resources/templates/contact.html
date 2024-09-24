@@ -382,67 +382,118 @@
                 </div>
             </div>
             <div class="content-area-">
-                <section class="container mt-5">
+                <section class="container mt-4">
                     <h2 class="text-center">Contact Us</h2>
-                    <form id="contactForm">
+                    <form id="contactForm" class="p-4 shadow-lg bg-white rounded"
+                          style="border-radius: 20px; max-width: 600px; margin: 0 auto;">
                         <div class="form-group">
                             <label for="fullName">Full Name</label>
-                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name" required>
+                            <input type="text" class="form-control" id="fullName" placeholder="Enter your full name"
+                                   required style="border-radius: 10px;">
                         </div>
                         <div class="form-group">
                             <label for="email">Email</label>
-                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required>
+                            <input type="email" class="form-control" id="email" placeholder="Enter your email" required
+                                   style="border-radius: 10px;">
                         </div>
                         <div class="form-group">
                             <label for="contactNumber">Contact Number</label>
-                            <input type="tel" class="form-control" id="contactNumber" placeholder="Enter your contact number" required>
+                            <input type="tel" class="form-control" id="contactNumber"
+                                   placeholder="Enter your contact number" required style="border-radius: 10px;">
                         </div>
                         <div class="form-group">
                             <label for="country">Country</label>
-                            <select class="form-control" id="country" required>
+                            <select class="form-control" id="country" required style="border-radius: 10px;">
                                 <option value="">Select your country</option>
                                 <option value="USA">USA</option>
                                 <option value="Canada">Canada</option>
                                 <option value="UK">UK</option>
                                 <option value="India">India</option>
                                 <option value="Australia">Australia</option>
-                                <!-- Add more countries as needed -->
                             </select>
                         </div>
                         <div class="form-group">
                             <label for="description">Description</label>
-                            <textarea class="form-control" id="description" rows="3" placeholder="Enter your message" required></textarea>
+                            <textarea class="form-control" id="description" rows="3" placeholder="Enter your message"
+                                      required style="border-radius: 10px;"></textarea>
                         </div>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-primary"
+                                    style="border-radius: 20px; padding: 10px 20px;">Submit
+                            </button>
+                            <button type="reset" class="btn btn-danger"
+                                    style="border-radius: 20px; padding: 10px 20px; " onclick="clearForm()">Clear
+                            </button>
+                        </div>
                     </form>
                 </section>
+                <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
                 <script>
-                    $(document).ready(function() {
-                        $('#contactForm').on('submit', function(event) {
-                            event.preventDefault();
-                            const formData = {
-                                fullName: $('#fullName').val(),
-                                email: $('#email').val(),
-                                contactNumber: $('#contactNumber').val(),
-                                country: $('#country').val(),
-                                description: $('#description').val()
-                            };
+                    function clearForm() {
+       document.getElementById('contactForm').reset();
 
-                            $.ajax({
-                                type: 'POST',
-                                url: '/submit',
-                                data: JSON.stringify(formData),
-                                contentType: 'application/json',
-                                success: function(response) {
-                                    alert(response);
-                                },
-                                error: function() {
-                                    alert('There was an error processing your request. Please try again.');
-                                }
-                            });
-                        });
-                    });
+       $('#fullName').val('');
+       $('#email').val('');
+       $('#contactNumber').val('');
+       $('#country').val('');
+       $('#description').val('');
+   }
+                  $(document).ready(function() {
+    $('#contactForm').on('submit', function(event) {
+        event.preventDefault();
+
+        const formData = {
+            fullName: $('#fullName').val(),
+            email: $('#email').val(),
+            contactNumber: $('#contactNumber').val(),
+            country: $('#country').val(),
+            description: $('#description').val()
+        };
+
+        $.ajax({
+            type: 'POST',
+            url: '/submit',
+            data: JSON.stringify(formData),
+            contentType: 'application/json',
+            success: function(response) {
+                console.log('Success:', response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success!',
+                    text: 'Form submitted successfully!',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-success'
+                    }
+                });
+                 document.getElementById('contactForm').reset();
+       $('#fullName').val('');
+       $('#email').val('');
+       $('#contactNumber').val('');
+       $('#country').val('');
+       $('#description').val('');
+            },
+            error: function(xhr, status, error) {
+                console.error('Error:', error);
+                console.error('Status:', status);
+                console.error('Response Text:', xhr.responseText);
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error!',
+                    text: 'There was an error processing your request. Please try again.',
+                    confirmButtonText: 'OK',
+                    customClass: {
+                        confirmButton: 'btn btn-danger'
+                    }
+                });
+            }
+        });
+    });
+});
+
                 </script>
+
 
             </div>
 

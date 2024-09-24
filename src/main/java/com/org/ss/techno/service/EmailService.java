@@ -24,14 +24,8 @@ public class EmailService {
     private static final Logger logger = LoggerFactory.getLogger(EmailService.class);
 
 
-    public void sendEmail(User user) {
-        try{
-//            SimpleMailMessage message = new SimpleMailMessage();
-//            message.setTo("pappunawale1000@gmail.com");
-//            message.setFrom("sstechno1000@gmail.com");
-//            message.setSubject("New Form Submission");
-//            message.setText(formatUserDetails(user));
-//            emailSender.send(message);
+    public boolean sendEmail(User user) {
+        try {
             Context thymeleafContext = new Context();
             thymeleafContext.setVariable("fullName", user.getFullName());
             thymeleafContext.setVariable("email", user.getEmail());
@@ -42,19 +36,20 @@ public class EmailService {
 
             MimeMessage message = emailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true);
-            helper.setTo(user.getEmail());
-            helper.setSubject("Thank You for Your Submission");
+            helper.setTo("sstechno1000@gmail.com");
+            helper.setFrom(user.getEmail());
+            helper.setSubject("Inquiry Submitted: " + user.getFullName());
             helper.setText(htmlBody, true);
 
             emailSender.send(message);
-            logger.info("Email Sent SuccessFully : {}",user);
+            logger.info("Email Sent SuccessFully : {}", user);
             sendAcknowledgmentEmail(user);
-            logger.info("Email ack send : {}",user.getEmail());
+            logger.info("Email ack send : {}", user.getEmail());
+            return true;
+        } catch (Exception e) {
+            logger.error("Error occurs while sending ack :{}", e);
         }
-        catch(Exception e)
-        {
-            logger.error("Error occurs while sending ack :{}",e);
-        }
+        return false;
     }
 
     private String formatUserDetails(User user) {
@@ -62,31 +57,24 @@ public class EmailService {
                 user.getFullName(), user.getEmail(), user.getContactNumber(), user.getCountry(), user.getDescription());
     }
 
-//    private void sendAcknowledgmentEmail(String userEmail) {
-//        SimpleMailMessage message = new SimpleMailMessage();
-//        message.setTo(userEmail);
-//        message.setSubject("Thank You for Your Submission");
-//        message.setText("Thank you for your submission! We will get back to you shortly.");
-//        emailSender.send(message);
-//    }
-public void sendAcknowledgmentEmail(User user) throws MessagingException {
-    Context thymeleafContext = new Context();
-    thymeleafContext.setVariable("fullName", user.getFullName());
-    thymeleafContext.setVariable("email", user.getEmail());
-    thymeleafContext.setVariable("contactNumber", user.getContactNumber());
-    thymeleafContext.setVariable("country", user.getCountry());
-    thymeleafContext.setVariable("description", user.getDescription());
+    public void sendAcknowledgmentEmail(User user) throws MessagingException {
+        Context thymeleafContext = new Context();
+        thymeleafContext.setVariable("fullName", user.getFullName());
+        thymeleafContext.setVariable("email", user.getEmail());
+        thymeleafContext.setVariable("contactNumber", user.getContactNumber());
+        thymeleafContext.setVariable("country", user.getCountry());
+        thymeleafContext.setVariable("description", user.getDescription());
 
-    String htmlBody = templateEngine.process("acknowledgment", thymeleafContext);
+        String htmlBody = templateEngine.process("acknowledgment", thymeleafContext);
 
-    MimeMessage message = emailSender.createMimeMessage();
-    MimeMessageHelper helper = new MimeMessageHelper(message, true);
-    helper.setTo(user.getEmail());
-    helper.setSubject("Thank You for Your Submission");
-    helper.setText(htmlBody, true);
-
-    emailSender.send(message);
-    System.out.println("Acknowledgment email sent successfully!");
-}
-
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+        helper.setFrom("sstechno1000@gmail.com");
+        helper.setTo(user.getEmail());
+        helper.setSubject("Inquiry Submitted: " + user.getFullName());
+        helper.setSubject("Thank You for Your Submission");
+        helper.setText(htmlBody, true);
+        emailSender.send(message);
+        logger.info("Acknowledgment email sent successfully!");
+    }
 }
